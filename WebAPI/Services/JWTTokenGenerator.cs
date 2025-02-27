@@ -2,14 +2,23 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.Extensions.Configuration;
 
 namespace WebAPI.Services
 {
+
     public class JWTTokenGenerator
     {
+        private readonly IConfiguration _configuration;
+
+        public JWTTokenGenerator(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
         public string GenerateToken(string username, bool isAdmin)
         {
-            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("your_secret_key_that_is_at_least_32_bytes_long"));
+            var secretKeyString = _configuration["JWTSecretKey"];
+            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKeyString));
             var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 
 

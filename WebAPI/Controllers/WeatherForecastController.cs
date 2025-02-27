@@ -14,14 +14,16 @@ namespace WebAPI.Controllers
 
         private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        private readonly IConfiguration _configuration;
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IConfiguration configuration)
         {
             _logger = logger;
+            _configuration = configuration;
         }
 
         [Authorize]
         [HttpGet("GetWeatherClosed")]
-        public IEnumerable<WeatherForecast> Get2()
+        public IEnumerable<WeatherForecast> Get()
         {
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
@@ -33,7 +35,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("GetWeatherOpen")]
-        public IEnumerable<WeatherForecast> Get()
+        public IEnumerable<WeatherForecast> Get2()
         {
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
@@ -43,6 +45,15 @@ namespace WebAPI.Controllers
             })
             .ToArray();
         }
+
+        [HttpGet("AppSettings")]
+        public string Get3()
+        {
+            var ApiKey = _configuration["AppSettings:ApiKey"];
+            var SimpleValue = _configuration["SimpleValue"];
+            return $" ApiKey: {ApiKey} \n SimpleValue: {SimpleValue}";
+        }
+
 
     }
 }

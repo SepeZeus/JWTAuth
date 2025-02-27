@@ -14,6 +14,13 @@ namespace WebAPI.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
+        private readonly IConfiguration _configuration;
+
+        public UserController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         [HttpPost("login")]
         public IActionResult Login([FromBody] UserCredentials credentials)
         {
@@ -21,14 +28,14 @@ namespace WebAPI.Controllers
             if (credentials.Username == "testuser" && credentials.Password == "testpassword")
             {
                 // Jos tunnistetiedot ovat oikein, generoi JWT-token ja palauta se
-                var tokenService = new JWTTokenGenerator(); // Oletetaan, että TokenService on luokka, joka generoi tokenin
+                var tokenService = new JWTTokenGenerator(_configuration); // Oletetaan, että TokenService on luokka, joka generoi tokenin
                 var token = tokenService.GenerateToken(credentials.Username, false);
                 return Ok(new { Token = token });
             }
             else if (credentials.Username == "admin" && credentials.Password == "adminpassword")
             {
                 // Jos tunnistetiedot ovat oikein, generoi JWT-token ja palauta se
-                var tokenService = new JWTTokenGenerator(); // Oletetaan, että TokenService on luokka, joka generoi tokenin
+                var tokenService = new JWTTokenGenerator(_configuration); // Oletetaan, että TokenService on luokka, joka generoi tokenin
                 var token = tokenService.GenerateToken(credentials.Username, true);
                 return Ok(new { Token = token });
             }
